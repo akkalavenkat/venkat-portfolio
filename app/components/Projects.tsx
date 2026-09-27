@@ -3,9 +3,9 @@ import Link from "next/link";
 import { projects } from "@/app/data/projects";
 
 const featuredSlugs = [
-  "portfolio-development",
-  "secure-code-execution-engine",
-  "emergency-operations-control-platform",
+  "payment-transaction-processing-platform",
+  "event-driven-trade-processing-platform",
+  "enterprise-cost-data-platform",
 ];
 const featuredProjects = featuredSlugs
   .map((slug) => projects.find((p) => p.slug === slug))

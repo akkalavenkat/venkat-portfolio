@@ -1,0 +1,60 @@
+name: Deployment SMTP Health
+
+on:
+  workflow_run:
+    workflows:
+      - CI
+    types:
+      - completed
+
+permissions:
+  actions: read
+  contents: read
+
+jobs:
+  smtp-health-check:
+    if: >-
+      github.event.workflow_run.conclusion == 'success' &&
+      github.event.workflow_run.event == 'push' &&
+      github.event.workflow_run.head_branch == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for Vercel deployment
+        run: sleep 60
+
+      - name: Trigger deployment SMTP health endpoint
+        env:
+          DEPLOY_HEALTH_URL: ${{ secrets.DEPLOY_HEALTH_URL }}
+          DEPLOY_HEALTH_TOKEN: ${{ secrets.DEPLOY_HEALTH_TOKEN }}
+          COMMIT_SHA: ${{ github.event.workflow_run.head_sha }}
+        run: |
+          if [ -z "$DEPLOY_HEALTH_URL" ] || [ -z "$DEPLOY_HEALTH_TOKEN" ]; then
+            echo "Missing DEPLOY_HEALTH_URL or DEPLOY_HEALTH_TOKEN secret"
+            exit 1
+          fi
+
+          PAYLOAD=$(cat <<EOF
+          {
+            "environment": "production",
+            "commitSha": "${COMMIT_SHA}",
+            "branch": "main",
+            "trigger": "github-actions"
+          }
+          EOF
+          )
+
+          echo "Calling deployment health endpoint..."
+          STATUS_CODE=$(curl -sS --max-time 30 --retry 3 --retry-delay 5 \
+            -o response.json -w "%{http_code}" \
+            -X POST "$DEPLOY_HEALTH_URL" \
+            -H "Content-Type: application/json" \
+            -H "x-deploy-health-token: $DEPLOY_HEALTH_TOKEN" \
+            -d "$PAYLOAD")
+
+          echo "Response status: $STATUS_CODE"
+          cat response.json
+
+          if [ "$STATUS_CODE" -lt 200 ] || [ "$STATUS_CODE" -ge 300 ]; then
+            echo "Deployment SMTP health check failed"
+            exit 1
+          fi

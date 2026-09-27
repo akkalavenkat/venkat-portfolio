@@ -99,6 +99,30 @@ export default function ContactSection() {
 
         <div className="mt-12 grid gap-10 lg:grid-cols-[1.05fr_1fr] lg:items-start">
           <div className="reveal lg:order-2" style={{ "--reveal-delay": "150ms" } as React.CSSProperties}>
+            <div className="ds-card mt-6 p-5">
+              <p className="ds-text text-sm font-semibold">{contact.directTitle}</p>
+              <div className="mt-3 space-y-3 text-sm">
+                <a
+                  href={`mailto:${contact.email}`}
+                  className="flex items-center gap-2 text-[var(--ds-text)] transition-colors hover:text-[var(--ds-accent)]"
+                >
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[var(--ds-accent-soft)] text-[var(--ds-accent)]">
+                    ✉
+                  </span>
+                  <span>{contact.email}</span>
+                </a>
+                <a
+                  href={`tel:${contact.phone.replace(/[^+\d]/g, "")}`}
+                  className="flex items-center gap-2 text-[var(--ds-text)] transition-colors hover:text-[var(--ds-accent)]"
+                >
+                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[var(--ds-accent-soft)] text-[var(--ds-accent)]">
+                    ☎
+                  </span>
+                  <span>{contact.phone}</span>
+                </a>
+              </div>
+            </div>
+
             <div className="ds-card mt-6 p-4">
               <p className="ds-text text-sm font-semibold">{contact.hintsTitle}</p>
               <ul className="ds-muted mt-2 space-y-1 text-sm">

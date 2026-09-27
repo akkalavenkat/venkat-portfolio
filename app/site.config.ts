@@ -104,6 +104,9 @@ export const siteConfig = {
     heading: "Let's build scalable systems together",
     subheading:
       "I design resilient backend systems, distributed architectures, and high-throughput event-driven platforms.",
+    email: "vnreddy.akkala@gmail.com",
+    phone: "+1-2897487747",
+    directTitle: "Direct contact",
     hintsTitle: "To help me respond faster, please include:",
     hints: ["Project context or role details", "Expected timeline", "Relevant links or references"],
     messagePlaceholder: "Tell me a bit about the project, role, or problem you want to discuss.",
